@@ -225,7 +225,7 @@
 			<input type="checkbox" id="bgm-checkbox">
 		</p>
 		<p class="controls">
-			Live Updater URL: <input id="live-url" value="https://www.reddit.com/live/w9eip857jzxu/" size="39">
+			Live Updater URL: <input id="live-url" value="https://www.reddit.com/live/w49cirhofsrj/" size="39">
 		</p>
 		<script>
 			live_socket = null;
@@ -392,12 +392,15 @@
 						$('.bgm').filter(audioReady).prop('currentTime',0);
 						$('#bgm-1').trigger('play');
 					}
+				} else if ($("#bgm-checkbox").not(":checked")) {
+					$('.bgm').trigger('pause');
 				}
 			}
 			updateNewsWindow();
 			updateBGM();
 			$('input[type=radio]').change(updateNewsWindow);
-			$('input').change(updateBGM);
+			$('input[type=radio]').change(updateBGM);
+			$('input[type=checkbox]').change(updateBGM);
 			
 			connectLiveUpdater();
 			$('#live-url').change(connectLiveUpdater);
