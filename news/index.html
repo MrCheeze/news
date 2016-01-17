@@ -310,6 +310,7 @@
 										news_substr = news_msg.substr(0,len);
 									}
 									$('.news-text-inner').html(news_substr + '<div class="bottom"></div>');
+									$('a').prop('target','_blank');
 									$('.bottom').trigger('scrollIntoView');
 									
 									if (len < max_len) {
