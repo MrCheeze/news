@@ -7,6 +7,7 @@
 			margin-left: auto;
 			margin-right: auto;
 			position: relative;
+			margin-bottom: 16px;
 		}
 		.col-news-window {
 			width: 720px;
@@ -95,7 +96,7 @@
 		#frame-2, #frame-3 {
 			display: none;
 		}
-		.controls-radio, .controls-checkbox {
+		.controls {
 			text-align: center;
 			-webkit-touch-callout: none;
 			-webkit-user-select: none;
@@ -103,10 +104,8 @@
 			-moz-user-select: none;
 			-ms-user-select: none;
 			user-select: none;
-			margin-bottom: 0;
-		}
-		.controls-checkbox {
 			margin-top: 8px;
+			margin-bottom: 8px;
 		}
 		body {
 			background-color: #111;
@@ -211,7 +210,7 @@
 				<source src="news4b.webm" type="video/mp4">
 			</video>
 		</div>
-		<p class="controls-radio">
+		<p class="controls">
 			<input type="radio" name="newswindow-button" id="button1" checked>
 			<label for="button1">News-chan</label>
 			<input type="radio" name="newswindow-button" id="button2">
@@ -221,89 +220,113 @@
 			<input type="radio" name="newswindow-button" id="button4">
 			<label for="button4">Pofty</label>
 		</p>
-		<p class="controls-checkbox">
+		<p class="controls">
+			<label for="bgm-checkbox">BGM:</label>
 			<input type="checkbox" id="bgm-checkbox">
-			<label for="bgm-checkbox">BGM</label>
+		</p>
+		<p class="controls">
+			Live Updater URL: <input id="live-url" value="https://www.reddit.com/live/w9eip857jzxu/" size="39">
 		</p>
 		<script>
-			$.get('https://www.reddit.com/live/w9eip857jzxu/about.json', function (result) {
-				socket_url = result.data.websocket_url.replace('&amp;','&');
+			live_socket = null;
+			
+			function connectLiveUpdater() {
+				if (live_socket) {live_socket.close();}
 				
-				live_socket = new WebSocket(socket_url);
-				live_socket.onopen = function () {
-					console.log('connected to live updater');
-				};
-				live_socket.onmessage = function (event) {
-					event_data = JSON.parse(event.data);
+				json_url = $('#live-url').prop('value');
+				if (json_url.endsWith('/')) {
+					json_url = json_url + 'about.json';
+				} else {
+					json_url = json_url + '/about.json';
+				}
+				
+				$.get(json_url).error(function () {
+					$('#live-url').css('background','red');
+				}).success(function (result) {
+					socket_url = result.data.websocket_url.replace('&amp;','&');
 					
-					if (event_data.type == 'update') {
-						update = event_data.payload.data;
-						$('#newsMusic').stop().prop({currentTime: 0, volume: 1}).trigger('play');
-						$('.bgm').trigger('pause');
-						$('.yes-news').show();
-						$('.no-news').hide();
-						$('video').trigger('pause');
-						$('video:visible').trigger('play')
-						$('.news-text').hide();
-						$('.news-textbox').hide();
-						$('#talkSound').trigger('pause');
+					live_socket = new WebSocket(socket_url);
+					live_socket.onopen = function () {
+						$('#live-url').css('background','white');
+						console.log('connected to live updater');
+					};
+					live_socket.onerror = function (err) {
+						if (live_socket.readyState != 1) {
+							$('#live-url').css('background','#800000');
+						}
+					};
+					live_socket.onmessage = function (event) {
+						event_data = JSON.parse(event.data);
 						
-						setTimeout(function () {
-							if ($('#newsMusic').prop('currentTime') > 10) {
-								$('#newsMusic').not(":animated").animate({volume: 0}, 8000)
-							}
-						}, 11000);
-						setTimeout(function () {
-							if ($('#newsMusic').prop('currentTime') > 19) {
-								updateBGM();
-							}
-						}, 19750);
-						
-						setTimeout(function () {
+						if (event_data.type == 'update') {
+							update = event_data.payload.data;
+							$('#newsMusic').stop().prop({currentTime: 0, volume: 1}).trigger('play');
+							$('.bgm').trigger('pause');
+							$('.yes-news').show();
+							$('.no-news').hide();
+							$('video').trigger('pause');
+							$('video:visible').trigger('play')
+							$('.news-text').hide();
+							$('.news-textbox').hide();
+							$('#talkSound').trigger('pause');
 							
-							if ($('#newsMusic').prop('currentTime') < 4) {
-								return;
-							}
+							setTimeout(function () {
+								if ($('#newsMusic').prop('currentTime') > 10) {
+									$('#newsMusic').not(":animated").animate({volume: 0}, 8000)
+								}
+							}, 11000);
+							setTimeout(function () {
+								if ($('#newsMusic').prop('currentTime') > 19) {
+									updateBGM();
+								}
+							}, 19750);
 							
-							$('.news-text-inner').html('');
-							$('.news-text').show();
-							$('.news-textbox').show();
-						
-							news_msg = update.body_html;
-							len = 0;
-							max_len = news_msg.length
-							
-							function add_char() {
+							setTimeout(function () {
+								
 								if ($('#newsMusic').prop('currentTime') < 4) {
 									return;
 								}
-							
-								len = len + 1;
-								news_substr = news_msg.substr(0,len);
 								
-								while (news_substr.search(/<[^>]*$/) >= 0 && len < max_len) {
-									//make sure there's no unclosed html tags
+								$('.news-text-inner').html('');
+								$('.news-text').show();
+								$('.news-textbox').show();
+							
+								news_msg = update.body_html;
+								len = 0;
+								max_len = news_msg.length
+								
+								function add_char() {
+									if ($('#newsMusic').prop('currentTime') < 4) {
+										return;
+									}
+								
 									len = len + 1;
 									news_substr = news_msg.substr(0,len);
+									
+									while (news_substr.search(/<[^>]*$/) >= 0 && len < max_len) {
+										//make sure there's no unclosed html tags
+										len = len + 1;
+										news_substr = news_msg.substr(0,len);
+									}
+									$('.news-text-inner').html(news_substr + '<div class="bottom"></div>');
+									$('.bottom').trigger('scrollIntoView');
+									
+									if (len < max_len) {
+										setTimeout(add_char, 25);
+									} else {
+										$('.md > :last-child').html($('.md > :last-child').html() + ' <div class="arrow"></div>');
+										$('#talkSound').trigger('pause');
+									}
 								}
-								$('.news-text-inner').html(news_substr + '<div class="bottom"></div>');
-								$('.bottom').trigger('scrollIntoView');
 								
-								if (len < max_len) {
-									setTimeout(add_char, 25);
-								} else {
-									$('.md > :last-child').html($('.md > :last-child').html() + ' <div class="arrow"></div>');
-									$('#talkSound').trigger('pause');
-								}
-							}
-							
-							$('#talkSound').prop({currentTime: 0}).trigger('play');
-							add_char();
-							
-						}, 4500);
-					}
-				};
-			});
+								$('#talkSound').prop({currentTime: 0}).trigger('play');
+								add_char();
+								
+							}, 4500);
+						}
+					};
+				});
+			}
 			
 			function closeText() {
 				if ($('.news-text:visible').length) {
@@ -375,6 +398,9 @@
 			updateBGM();
 			$('input[type=radio]').change(updateNewsWindow);
 			$('input').change(updateBGM);
+			
+			connectLiveUpdater();
+			$('#live-url').change(connectLiveUpdater);
 		</script>
 	</body>
 </html>
