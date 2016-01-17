@@ -98,12 +98,6 @@
 		}
 		.controls {
 			text-align: center;
-			-webkit-touch-callout: none;
-			-webkit-user-select: none;
-			-khtml-user-select: none;
-			-moz-user-select: none;
-			-ms-user-select: none;
-			user-select: none;
 			margin-top: 8px;
 			margin-bottom: 8px;
 		}
@@ -135,6 +129,9 @@
 			from {top: -3px;}
 			to {top: 5px;}
 		}
+		video:focus {
+			outline: none;
+		}
 		</style>
 	</head>
 	<body>
@@ -160,55 +157,55 @@
 			<source src="pokespot.mp3">
 		</audio>
 		<div class="news-window col-news-window" id="window-1">
-			<div class="news-textbox col-news-textbox"></div>
-			<div class="news-text col-news-text">
-				<div class="news-text-inner"></div>
-			</div>
 			<video width="720" height="540" autoplay loop class="yes-news">
 				<source src="news1.webm" type="video/mp4">
 			</video>
 			<video width="720" height="540" autoplay loop class="no-news">
 				<source src="news1b.webm" type="video/mp4">
 			</video>
-		</div>
-		<div class="news-window xd-news-window" id="window-2">
-			<div class="news-textbox xd-news-textbox-outer"></div>
-			<div class="news-textbox xd-news-textbox-inner"></div>
-			<div class="news-text xd-news-text">
+			<div class="news-textbox col-news-textbox"></div>
+			<div class="news-text col-news-text">
 				<div class="news-text-inner"></div>
 			</div>
+		</div>
+		<div class="news-window xd-news-window" id="window-2">
 			<video width="675" height="540" autoplay loop class="yes-news">
 				<source src="news2.webm" type="video/mp4">
 			</video>
 			<video width="675" height="540" autoplay loop class="no-news">
 				<source src="news2b.webm" type="video/mp4">
 			</video>
-		</div>
-		<div class="news-window xd-news-window" id="window-3">
 			<div class="news-textbox xd-news-textbox-outer"></div>
 			<div class="news-textbox xd-news-textbox-inner"></div>
 			<div class="news-text xd-news-text">
 				<div class="news-text-inner"></div>
 			</div>
+		</div>
+		<div class="news-window xd-news-window" id="window-3">
 			<video width="675" height="540" autoplay loop class="yes-news">
 				<source src="news3.webm" type="video/mp4">
 			</video>
 			<video width="675" height="540" autoplay loop class="no-news">
 				<source src="news3b.webm" type="video/mp4">
 			</video>
-		</div>
-		<div class="news-window xd-news-window" id="window-4">
 			<div class="news-textbox xd-news-textbox-outer"></div>
 			<div class="news-textbox xd-news-textbox-inner"></div>
 			<div class="news-text xd-news-text">
 				<div class="news-text-inner"></div>
 			</div>
+		</div>
+		<div class="news-window xd-news-window" id="window-4">
 			<video width="675" height="540" autoplay loop class="yes-news">
 				<source src="news4.webm" type="video/mp4">
 			</video>
 			<video width="675" height="540" autoplay loop class="no-news">
 				<source src="news4b.webm" type="video/mp4">
 			</video>
+			<div class="news-textbox xd-news-textbox-outer"></div>
+			<div class="news-textbox xd-news-textbox-inner"></div>
+			<div class="news-text xd-news-text">
+				<div class="news-text-inner"></div>
+			</div>
 		</div>
 		<p class="controls">
 			<input type="radio" name="newswindow-button" id="button1" checked>
@@ -310,6 +307,7 @@
 									}
 									$('.news-text-inner').html(news_substr + '<div class="bottom"></div>');
 									$('.bottom').trigger('scrollIntoView');
+									$('a').prop('target','_blank');
 									
 									if (len < max_len) {
 										setTimeout(add_char, 25);
@@ -329,7 +327,7 @@
 			}
 			
 			function closeText() {
-				if ($('.news-text:visible').length) {
+				if ($('.news-text:visible').length && !$('.md a:focus').length) {
 					$('#talkSound').trigger('pause');
 					$('#clickSound').prop({currentTime: 0}).trigger('play');
 					$('.news-text').hide();
@@ -352,7 +350,7 @@
 			};
 			
 			$('.news-window').click(closeText);
-			$('.bgm').prop({volume: 0.2})
+			$('.bgm').prop({volume: 0.2});
 			
 			function updateNewsWindow() {
 				$('.news-window').hide();
