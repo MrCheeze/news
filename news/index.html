@@ -1,0 +1,380 @@
+<html>
+	<head>
+		<title>NEWS NEWS NEWS</title>
+		<script src="jquery-1.12.0.min.js"></script>
+		<style>
+		.news-window {
+			margin-left: auto;
+			margin-right: auto;
+			position: relative;
+		}
+		.col-news-window {
+			width: 720px;
+			height: 540px;
+		}
+		.xd-news-window {
+			width: 675px;
+			height: 540px;
+		}
+		.news-textbox {
+			position: absolute;
+			display: none;
+		}
+		.col-news-textbox {
+			top: 324px;
+			left: 36px;
+			right: 36px;
+			bottom: 36px;
+			background: black;
+			filter: blur(5.5px);
+			-webkit-filter: blur(5.5px);
+			opacity: 0.55;
+		}
+		.xd-news-textbox-outer {
+			border: 1px solid black;
+			border-radius: 11px;
+			background-color: rgba(127, 127, 127, 0.5);
+			background-opacity: 0.5;
+			top: 320px;
+			left: 25px;
+			right: 25px;
+			bottom: 55px;
+		}
+		.xd-news-textbox-inner {
+			border: 1px solid black;
+			border-radius: 11px;
+			background-color: rgba(0, 0, 0, 0.5);
+			background-opacity: 0.5;
+			top: 325px;
+			left: 44px;
+			right: 44px;
+			bottom: 60px;
+		}
+		.news-text {
+			font-family: Arial, Helvetica, sans-serif;
+			position: absolute;
+			color: white;
+			font-size: 23px;
+			letter-spacing: 0.5px;
+			line-height: 35px;
+			overflow: hidden;
+			bottom: 64px;
+			display: none;
+			overflow: hidden;
+		}
+		.col-news-text {
+			top: 338px;
+			left: 60px;
+			right: 95px;
+			margin-bottom: -2px;
+		}
+		.xd-news-text {
+			top: 332px;
+			left: 55px;
+			right: 55px;
+			margin-bottom: 4px;
+		}
+		.news-text-inner {
+			overflow: auto;
+			height: 100%;
+			width: 100%;
+			padding-right: 20px;
+		}
+		.yes-news {
+			display: none;
+		}
+		.md p, .md ul, .md pre, .md blockquote {
+			margin-top: 0;
+			padding-top: 0;
+			margin-bottom: 0;
+			padding-bottom: 0;
+		}
+		.md a {
+			color: #1AF;
+		}
+		#frame-2, #frame-3 {
+			display: none;
+		}
+		.controls-radio, .controls-checkbox {
+			text-align: center;
+			-webkit-touch-callout: none;
+			-webkit-user-select: none;
+			-khtml-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
+			margin-bottom: 0;
+		}
+		.controls-checkbox {
+			margin-top: 8px;
+		}
+		body {
+			background-color: #111;
+			color: #ddd;
+		}
+		.arrow {
+			display: inline-block;
+			position: relative;
+		}
+		.col-news-text .arrow {
+			background: url('col-arrow.png');
+			width: 21px;
+			height: 22px;
+			animation: col-arrow 0.45s infinite alternate ease-in;
+		}
+		.xd-news-text .arrow {
+			background: url('xd-arrow.png');
+			width: 18px;
+			height: 11px;
+			animation: xd-arrow 0.45s infinite alternate ease-in;
+		}
+		@keyframes col-arrow {
+			from {top: 1px;}
+			to {top: 9px;}
+		}
+		@keyframes xd-arrow {
+			from {top: -3px;}
+			to {top: 5px;}
+		}
+		</style>
+	</head>
+	<body>
+		<audio id="newsMusic">
+			<source src="news.mp3">
+		</audio>
+		<audio id="talkSound" loop>
+			<source src="talk.mp3">
+		</audio>
+		<audio id="clickSound">
+			<source src="click.mp3">
+		</audio>
+		<audio class="bgm" id="bgm-1" loop>
+			<source src="phenac.mp3">
+		</audio>
+		<audio class="bgm" id="bgm-2" loop>
+			<source src="pyrite.mp3">
+		</audio>
+		<audio class="bgm" id="bgm-3" loop>
+			<source src="onbs.mp3">
+		</audio>
+		<audio class="bgm" id="bgm-4" loop>
+			<source src="pokespot.mp3">
+		</audio>
+		<div class="news-window col-news-window" id="window-1">
+			<div class="news-textbox col-news-textbox"></div>
+			<div class="news-text col-news-text">
+				<div class="news-text-inner"></div>
+			</div>
+			<video width="720" height="540" autoplay loop class="yes-news">
+				<source src="news1.webm" type="video/mp4">
+			</video>
+			<video width="720" height="540" autoplay loop class="no-news">
+				<source src="news1b.webm" type="video/mp4">
+			</video>
+		</div>
+		<div class="news-window xd-news-window" id="window-2">
+			<div class="news-textbox xd-news-textbox-outer"></div>
+			<div class="news-textbox xd-news-textbox-inner"></div>
+			<div class="news-text xd-news-text">
+				<div class="news-text-inner"></div>
+			</div>
+			<video width="675" height="540" autoplay loop class="yes-news">
+				<source src="news2.webm" type="video/mp4">
+			</video>
+			<video width="675" height="540" autoplay loop class="no-news">
+				<source src="news2b.webm" type="video/mp4">
+			</video>
+		</div>
+		<div class="news-window xd-news-window" id="window-3">
+			<div class="news-textbox xd-news-textbox-outer"></div>
+			<div class="news-textbox xd-news-textbox-inner"></div>
+			<div class="news-text xd-news-text">
+				<div class="news-text-inner"></div>
+			</div>
+			<video width="675" height="540" autoplay loop class="yes-news">
+				<source src="news3.webm" type="video/mp4">
+			</video>
+			<video width="675" height="540" autoplay loop class="no-news">
+				<source src="news3b.webm" type="video/mp4">
+			</video>
+		</div>
+		<div class="news-window xd-news-window" id="window-4">
+			<div class="news-textbox xd-news-textbox-outer"></div>
+			<div class="news-textbox xd-news-textbox-inner"></div>
+			<div class="news-text xd-news-text">
+				<div class="news-text-inner"></div>
+			</div>
+			<video width="675" height="540" autoplay loop class="yes-news">
+				<source src="news4.webm" type="video/mp4">
+			</video>
+			<video width="675" height="540" autoplay loop class="no-news">
+				<source src="news4b.webm" type="video/mp4">
+			</video>
+		</div>
+		<p class="controls-radio">
+			<input type="radio" name="newswindow-button" id="button1" checked>
+			<label for="button1">News-chan</label>
+			<input type="radio" name="newswindow-button" id="button2">
+			<label for="button2">Ancha (TV)</label>
+			<input type="radio" name="newswindow-button" id="button3">
+			<label for="button3">Ancha (Live)</label>
+			<input type="radio" name="newswindow-button" id="button4">
+			<label for="button4">Pofty</label>
+		</p>
+		<p class="controls-checkbox">
+			<input type="checkbox" id="bgm-checkbox">
+			<label for="bgm-checkbox">BGM</label>
+		</p>
+		<script>
+			$.get('https://www.reddit.com/live/w9eip857jzxu/about.json', function (result) {
+				socket_url = result.data.websocket_url.replace('&amp;','&');
+				
+				live_socket = new WebSocket(socket_url);
+				live_socket.onopen = function () {
+					console.log('connected to live updater');
+				};
+				live_socket.onmessage = function (event) {
+					event_data = JSON.parse(event.data);
+					
+					if (event_data.type == 'update') {
+						update = event_data.payload.data;
+						$('#newsMusic').stop().prop({currentTime: 0, volume: 1}).trigger('play');
+						$('.bgm').trigger('pause');
+						$('.yes-news').show();
+						$('.no-news').hide();
+						$('video').trigger('pause');
+						$('video:visible').trigger('play')
+						$('.news-text').hide();
+						$('.news-textbox').hide();
+						$('#talkSound').trigger('pause');
+						
+						setTimeout(function () {
+							if ($('#newsMusic').prop('currentTime') > 10) {
+								$('#newsMusic').not(":animated").animate({volume: 0}, 8000)
+							}
+						}, 11000);
+						setTimeout(function () {
+							if ($('#newsMusic').prop('currentTime') > 19) {
+								updateBGM();
+							}
+						}, 19750);
+						
+						setTimeout(function () {
+							
+							if ($('#newsMusic').prop('currentTime') < 4) {
+								return;
+							}
+							
+							$('.news-text-inner').html('');
+							$('.news-text').show();
+							$('.news-textbox').show();
+						
+							news_msg = update.body_html;
+							len = 0;
+							max_len = news_msg.length
+							
+							function add_char() {
+								if ($('#newsMusic').prop('currentTime') < 4) {
+									return;
+								}
+							
+								len = len + 1;
+								news_substr = news_msg.substr(0,len);
+								
+								while (news_substr.search(/<[^>]*$/) >= 0 && len < max_len) {
+									//make sure there's no unclosed html tags
+									len = len + 1;
+									news_substr = news_msg.substr(0,len);
+								}
+								$('.news-text-inner').html(news_substr + '<div class="bottom"></div>');
+								$('.bottom').trigger('scrollIntoView');
+								
+								if (len < max_len) {
+									setTimeout(add_char, 25);
+								} else {
+									$('.md > :last-child').html($('.md > :last-child').html() + ' <div class="arrow"></div>');
+									$('#talkSound').trigger('pause');
+								}
+							}
+							
+							$('#talkSound').prop({currentTime: 0}).trigger('play');
+							add_char();
+							
+						}, 4500);
+					}
+				};
+			});
+			
+			function closeText() {
+				if ($('.news-text:visible').length) {
+					$('#talkSound').trigger('pause');
+					$('#clickSound').prop({currentTime: 0}).trigger('play');
+					$('.news-text').hide();
+					$('.news-textbox').hide();
+					$('#newsMusic').stop().animate({volume: 0}, 2000)
+					setTimeout(function () {
+						if ($('#newsMusic').prop('currentTime') > 5) {
+							$('.no-news').show();
+							$('.yes-news').hide();
+							$('video').trigger('pause');
+							$('video:visible').trigger('play')
+						}
+					}, 1500);
+					setTimeout(function () {
+						if ($('#newsMusic').prop('currentTime') > 7) {
+							updateBGM();
+						}
+					}, 2750);
+				}
+			};
+			
+			$('.news-window').click(closeText);
+			$('.bgm').prop({volume: 0.2})
+			
+			function updateNewsWindow() {
+				$('.news-window').hide();
+				
+				if ($("#button2").is(":checked")) {
+					$('#window-2').show();
+				} else if ($("#button3").is(":checked")) {
+					$('#window-3').show();
+				} else if ($("#button4").is(":checked")) {
+					$('#window-4').show();
+				} else {
+					$('#window-1').show();
+				}
+				
+				$('video').trigger('pause');
+				$('video:visible').trigger('play')
+			}
+			function updateBGM() {
+				
+				function audioReady() {return this.readyState >= 4};
+				
+				if ($("#bgm-checkbox").is(":checked") && ($('.no-news:visible').length || ($('#newsMusic').prop('currentTime') > 19.5))) {
+					if ($("#button2").is(":checked") && $('#bgm-2').prop('paused')) {
+						$('.bgm').trigger('pause');
+						$('.bgm').filter(audioReady).prop('currentTime',0);
+						$('#bgm-2').trigger('play');
+					} else if ($("#button3").is(":checked") && $('#bgm-3').prop('paused')) {
+						$('.bgm').trigger('pause');
+						$('.bgm').filter(audioReady).prop('currentTime',0);
+						$('#bgm-3').trigger('play');
+					} else if ($("#button4").is(":checked") && $('#bgm-4').prop('paused')) {
+						$('.bgm').trigger('pause');
+						$('.bgm').filter(audioReady).prop('currentTime',0);
+						$('#bgm-4').trigger('play');
+					} else if  ($('#bgm-1').prop('paused')) {
+						$('.bgm').trigger('pause');
+						$('.bgm').filter(audioReady).prop('currentTime',0);
+						$('#bgm-1').trigger('play');
+					}
+				}
+			}
+			updateNewsWindow();
+			updateBGM();
+			$('input[type=radio]').change(updateNewsWindow);
+			$('input').change(updateBGM);
+		</script>
+	</body>
+</html>
