@@ -290,27 +290,30 @@
 							
 								news_msg = update.body_html;
 								len = 0;
+								extra_chars = 0;
 								max_len = news_msg.length
+								start_time = new Date();
 								
 								function add_char() {
+									console.log('a');
 									if ($('#newsMusic').prop('currentTime') < 4) {
 										return;
 									}
 								
-									len = len + 1;
+									len = Math.round((new Date() - start_time)/20) + extra_chars;
 									news_substr = news_msg.substr(0,len);
 									
 									while (news_substr.search(/<[^>]*$/) >= 0 && len < max_len) {
 										//make sure there's no unclosed html tags
+										extra_chars = extra_chars + 1;
 										len = len + 1;
 										news_substr = news_msg.substr(0,len);
 									}
 									$('.news-text-inner').html(news_substr + '<div class="bottom"></div>');
 									$('.bottom').trigger('scrollIntoView');
-									$('a').prop('target','_blank');
 									
 									if (len < max_len) {
-										setTimeout(add_char, 25);
+										setTimeout(add_char, 20);
 									} else {
 										$('.md > :last-child').html($('.md > :last-child').html() + ' <div class="arrow"></div>');
 										$('#talkSound').trigger('pause');
