@@ -96,14 +96,17 @@
 		#frame-2, #frame-3 {
 			display: none;
 		}
-		.controls {
+		.lower-content {
 			text-align: center;
+		}
+		.lower-content p {
 			margin-top: 8px;
 			margin-bottom: 8px;
 		}
 		body {
 			background-color: #111;
 			color: #ddd;
+			overflow-y: scroll;
 		}
 		.arrow {
 			display: inline-block;
@@ -131,6 +134,11 @@
 		}
 		video:focus {
 			outline: none;
+		}
+		iframe {
+			width: 540px;
+			height: 540px;
+			background: white;
 		}
 		</style>
 	</head>
@@ -207,23 +215,29 @@
 				<div class="news-text-inner"></div>
 			</div>
 		</div>
-		<p class="controls">
-			<input type="radio" name="newswindow-button" id="button1" checked>
-			<label for="button1">News-chan</label>
-			<input type="radio" name="newswindow-button" id="button2">
-			<label for="button2">Ancha (TV)</label>
-			<input type="radio" name="newswindow-button" id="button3">
-			<label for="button3">Ancha (Live)</label>
-			<input type="radio" name="newswindow-button" id="button4">
-			<label for="button4">Pofty</label>
-		</p>
-		<p class="controls">
-			<label for="bgm-checkbox">BGM:</label>
-			<input type="checkbox" id="bgm-checkbox">
-		</p>
-		<p class="controls">
-			Live Updater URL: <input id="live-url" value="https://www.reddit.com/live/w49cirhofsrj/" size="39">
-		</p>
+		<div class="lower-content">
+			<p>
+				<input type="radio" name="newswindow-button" id="button1" checked>
+				<label for="button1">News-chan</label>
+				<input type="radio" name="newswindow-button" id="button2">
+				<label for="button2">Ancha (TV)</label>
+				<input type="radio" name="newswindow-button" id="button3">
+				<label for="button3">Ancha (Live)</label>
+				<input type="radio" name="newswindow-button" id="button4">
+				<label for="button4">Pofty</label>
+			</p>
+			<p>
+				<label for="bgm-checkbox">BGM:</label>
+				<input type="checkbox" id="bgm-checkbox">
+			</p>
+			<p>
+				Live Updater URL: <input id="live-url" value="https://www.reddit.com/live/w49cirhofsrj/" size="39">
+			</p>
+			<p>
+				<button type="button" id="archive-button">News archive</button>
+			</p>
+			<p id="archive-container"></p>
+		</div>
 		<script>
 			live_socket = null;
 			
@@ -309,9 +323,9 @@
 										len = len + 1;
 										news_substr = news_msg.substr(0,len);
 									}
-									$('.news-text-inner').html(news_substr + '<div class="bottom"></div>');
+									$('.news-text-inner').html(news_substr);
 									$('a').prop('target','_blank');
-									$('.bottom').trigger('scrollIntoView');
+									$('.news-text-inner').scrollTop($('.news-text-inner').height());
 									
 									if (len < max_len) {
 										setTimeout(add_char, 20);
@@ -359,14 +373,14 @@
 			function updateNewsWindow() {
 				$('.news-window').hide();
 				
-				if ($("#button2").is(":checked")) {
+				if ($("#button1").is(":checked")) {
+					$('#window-1').show();
+				} else if ($("#button2").is(":checked")) {
 					$('#window-2').show();
 				} else if ($("#button3").is(":checked")) {
 					$('#window-3').show();
 				} else if ($("#button4").is(":checked")) {
 					$('#window-4').show();
-				} else {
-					$('#window-1').show();
 				}
 				
 				$('video').trigger('pause');
@@ -377,7 +391,11 @@
 				function audioReady() {return this.readyState >= 4};
 				
 				if ($("#bgm-checkbox").is(":checked") && ($('.no-news:visible').length || ($('#newsMusic').prop('currentTime') > 19.5))) {
-					if ($("#button2").is(":checked") && $('#bgm-2').prop('paused')) {
+					if ($("#button1").is(":checked") && $('#bgm-1').prop('paused')) {
+						$('.bgm').trigger('pause');
+						$('.bgm').filter(audioReady).prop('currentTime',0);
+						$('#bgm-1').trigger('play');
+					} else if ($("#button2").is(":checked") && $('#bgm-2').prop('paused')) {
 						$('.bgm').trigger('pause');
 						$('.bgm').filter(audioReady).prop('currentTime',0);
 						$('#bgm-2').trigger('play');
@@ -389,10 +407,6 @@
 						$('.bgm').trigger('pause');
 						$('.bgm').filter(audioReady).prop('currentTime',0);
 						$('#bgm-4').trigger('play');
-					} else if  ($('#bgm-1').prop('paused')) {
-						$('.bgm').trigger('pause');
-						$('.bgm').filter(audioReady).prop('currentTime',0);
-						$('#bgm-1').trigger('play');
 					}
 				} else if ($("#bgm-checkbox").not(":checked")) {
 					$('.bgm').trigger('pause');
@@ -406,6 +420,34 @@
 			
 			connectLiveUpdater();
 			$('#live-url').change(connectLiveUpdater);
+			
+			function hideArchive() {
+				$('#archive-embed').not(':hover').remove();
+			}
+			
+			$('#archive-button').click(function () {
+			
+				if ($('#archive-embed:visible').length) {
+					hideArchive();
+					return;
+				}
+				
+				embed_url = $('#live-url').prop('value').replace('reddit.com','redditmedia.com');
+				if (embed_url.endsWith('/')) {
+					embed_url = embed_url + 'embed';
+				} else {
+					embed_url = embed_url + '/embed';
+				}
+				$('#archive-container').html('<iframe id="archive-embed"></iframe>');
+				$('#archive-embed').attr('src',embed_url);
+				
+			}).blur(hideArchive);
+			
+			$('body').click(function () {
+				if (!$('#archive-button:focus').length) {
+					hideArchive();
+				}
+			});
 		</script>
 	</body>
 </html>
