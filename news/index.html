@@ -96,15 +96,16 @@
 		#frame-2, #frame-3 {
 			display: none;
 		}
-		.lower-content {
-			text-align: center;
- 			text-align: center;
+		* {
 			-webkit-touch-callout: none;
 			-webkit-user-select: none;
 			-khtml-user-select: none;
 			-moz-user-select: none;
 			-ms-user-select: none;
 			user-select: none;
+		}
+		.lower-content {
+			text-align: center;
 		}
 		.lower-content p {
 			margin-top: 8px;
@@ -292,19 +293,8 @@
 							$('#talkSound').trigger('pause');
 							
 							setTimeout(function () {
-								if ($('#newsMusic').prop('currentTime') > 10) {
-									$('#newsMusic').not(":animated").animate({volume: 0}, 8000)
-								}
-							}, 11000);
-							setTimeout(function () {
-								if ($('#newsMusic').prop('currentTime') > 19) {
-									updateBGM();
-								}
-							}, 19750);
-							
-							setTimeout(function () {
 								
-								if ($('#newsMusic').prop('currentTime') < 4) {
+								if ($('#newsMusic').prop('currentTime') < 3) {
 									return;
 								}
 								
@@ -319,8 +309,7 @@
 								start_time = new Date();
 								
 								function add_char() {
-									console.log('a');
-									if ($('#newsMusic').prop('currentTime') < 4) {
+									if ($('#newsMusic').prop('currentTime') < 3) {
 										return;
 									}
 								
@@ -335,7 +324,7 @@
 									}
 									$('.news-text-inner').html(news_substr);
 									$('a').prop('target','_blank');
-									$('.news-text-inner').scrollTop($('.news-text-inner').height());
+									$('.news-text-inner').scrollTop(10000000000);
 									
 									if (len < max_len) {
 										setTimeout(add_char, 20);
@@ -355,14 +344,13 @@
 			}
 			
 			function closeText() {
-				if ($('.news-text:visible').length && !$('.md a:focus').length) {
+				if ($('.news-text:visible').length) {
 					$('#talkSound').trigger('pause');
-					$('#clickSound').prop({currentTime: 0}).trigger('play');
 					$('.news-text').hide();
 					$('.news-textbox').hide();
 					$('#newsMusic').stop().animate({volume: 0}, 2000)
 					setTimeout(function () {
-						if ($('#newsMusic').prop('currentTime') > 5) {
+						if ($('#newsMusic').prop('currentTime') > 4) {
 							$('.no-news').show();
 							$('.yes-news').hide();
 							$('video').trigger('pause');
@@ -370,14 +358,20 @@
 						}
 					}, 1500);
 					setTimeout(function () {
-						if ($('#newsMusic').prop('currentTime') > 7) {
+						if ($('#newsMusic').prop('currentTime') > 6) {
+							$('#newsMusic').trigger('pause')
 							updateBGM();
 						}
 					}, 2750);
 				}
 			};
 			
-			$('.news-window').click(closeText);
+			$('.news-window').click(function () {
+				if ($('.news-text:visible').length && !$('.md a:focus').length) {
+					$('#clickSound').prop({currentTime: 0}).trigger('play');
+					closeText();
+				}
+			});
 			$('.bgm').prop({volume: 0.2});
 			
 			function updateNewsWindow() {
@@ -395,12 +389,13 @@
 				
 				$('video').trigger('pause');
 				$('video:visible').trigger('play')
+				$('.news-text-inner').scrollTop(10000000000);
 			}
 			function updateBGM() {
 				
 				function audioReady() {return this.readyState >= 4};
 				
-				if ($("#bgm-checkbox").is(":checked") && ($('.no-news:visible').length || ($('#newsMusic').prop('currentTime') > 19.5))) {
+				if ($("#bgm-checkbox").is(":checked") && $('#newsMusic').prop('paused')) {
 					if ($("#button1").is(":checked") && $('#bgm-1').prop('paused')) {
 						$('.bgm').trigger('pause');
 						$('.bgm').filter(audioReady).prop('currentTime',0);
@@ -428,11 +423,24 @@
 			$('input[type=radio]').change(updateBGM);
 			$('input[type=checkbox]').change(updateBGM);
 			
+			$('#newsMusic').on('ended', closeText);
+			
 			connectLiveUpdater();
-			$('#live-url').change(connectLiveUpdater);
+			$('#live-url').on('input', function () {
+				$('#live-url').css('background','lightgray');
+			});
+			$('#live-url').blur(connectLiveUpdater);
+			$('#live-url').keypress(function (event) {
+				keycode = (event.keyCode ? event.keyCode : event.which);
+				if (keycode == '13') {
+					connectLiveUpdater();
+				}
+			});
 			
 			function hideArchive() {
-				$('#archive-embed').not(':hover').remove();
+				if ($('#archive-embed').length) {
+					$('#archive-embed').not(':hover').remove();
+				}
 			}
 			
 			$('#archive-button').click(function () {
