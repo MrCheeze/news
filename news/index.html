@@ -98,6 +98,13 @@
 		}
 		.lower-content {
 			text-align: center;
+ 			text-align: center;
+			-webkit-touch-callout: none;
+			-webkit-user-select: none;
+			-khtml-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
 		}
 		.lower-content p {
 			margin-top: 8px;
@@ -139,6 +146,9 @@
 			width: 540px;
 			height: 540px;
 			background: white;
+		}
+		#live-url {
+			width: 256px;
 		}
 		</style>
 	</head>
@@ -231,7 +241,7 @@
 				<input type="checkbox" id="bgm-checkbox">
 			</p>
 			<p>
-				Live Updater URL: <input id="live-url" value="https://www.reddit.com/live/w49cirhofsrj/" size="39">
+				Live Updater URL: <input id="live-url" value="https://www.reddit.com/live/w49cirhofsrj/">
 			</p>
 			<p>
 				<button type="button" id="archive-button">News archive</button>
@@ -258,8 +268,8 @@
 					
 					live_socket = new WebSocket(socket_url);
 					live_socket.onopen = function () {
-						$('#live-url').css('background','white');
 						console.log('connected to live updater');
+						$('#live-url').css('background','white');
 					};
 					live_socket.onerror = function (err) {
 						if (live_socket.readyState != 1) {
