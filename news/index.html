@@ -256,6 +256,9 @@
 			<p>
 				<label for="bgm-checkbox">BGM:</label>
 				<input type="checkbox" id="bgm-checkbox">
+				<br>
+				<label for="bold-checkbox">Bold updates only:</label>
+				<input type="checkbox" id="bold-checkbox">
 			</p>
 			<p>
 				Live Updater URL: <input id="live-url" value="https://www.reddit.com/live/w49cirhofsrj/">
@@ -298,6 +301,11 @@
 						
 						if (event_data.type == 'update') {
 							update = event_data.payload.data;
+							
+							if ($('#bold-checkbox:checked').length && update.body_html.indexOf('<strong') < 0) {
+								return;
+							}
+							
 							$('#newsMusic').stop().prop({currentTime: 0, volume: 1}).trigger('play');
 							$('.bgm').trigger('pause');
 							$('.yes-news').show();
