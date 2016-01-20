@@ -175,6 +175,9 @@
 		<audio class="bgm" id="bgm-4" loop>
 			<source src="pokespot.mp3">
 		</audio>
+		<audio class="bgm" id="bgm-5" loop>
+			<source src="home.mp3">
+		</audio>
 		<div class="news-window col-news-window" id="window-1">
 			<video width="720" height="540" autoplay loop class="yes-news">
 				<source src="news1.webm" type="video/mp4">
@@ -226,6 +229,18 @@
 				<div class="news-text-inner"></div>
 			</div>
 		</div>
+		<div class="news-window col-news-window" id="window-5">
+			<video width="720" height="540" autoplay loop class="yes-news">
+				<source src="news5.webm" type="video/mp4">
+			</video>
+			<video width="720" height="540" autoplay loop class="no-news">
+				<source src="news5b.webm" type="video/mp4">
+			</video>
+			<div class="news-textbox col-news-textbox"></div>
+			<div class="news-text col-news-text">
+				<div class="news-text-inner"></div>
+			</div>
+		</div>
 		<div class="lower-content">
 			<p>
 				<input type="radio" name="newswindow-button" id="button1" checked>
@@ -236,6 +251,7 @@
 				<label for="button3">Ancha (Live)</label>
 				<input type="radio" name="newswindow-button" id="button4">
 				<label for="button4">Pofty</label>
+				<input type="radio" name="newswindow-button" id="button5" style="opacity:0.02">
 			</p>
 			<p>
 				<label for="bgm-checkbox">BGM:</label>
@@ -372,7 +388,7 @@
 					closeText();
 				}
 			});
-			$('.bgm').prop({volume: 0.2});
+			$('.bgm').prop({volume: 0.3});
 			
 			function updateNewsWindow() {
 				$('.news-window').hide();
@@ -385,6 +401,8 @@
 					$('#window-3').show();
 				} else if ($("#button4").is(":checked")) {
 					$('#window-4').show();
+				} else if ($("#button5").is(":checked")) {
+					$('#window-5').show();
 				}
 				
 				$('video').trigger('pause');
@@ -412,6 +430,10 @@
 						$('.bgm').trigger('pause');
 						$('.bgm').filter(audioReady).prop('currentTime',0);
 						$('#bgm-4').trigger('play');
+					} else if ($("#button5").is(":checked") && $('#bgm-5').prop('paused')) {
+						$('.bgm').trigger('pause');
+						$('.bgm').filter(audioReady).prop('currentTime',0);
+						$('#bgm-5').trigger('play');
 					}
 				} else if ($("#bgm-checkbox").not(":checked")) {
 					$('.bgm').trigger('pause');
