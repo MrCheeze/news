@@ -396,7 +396,7 @@
 					closeText();
 				}
 			});
-			$('.bgm').prop({volume: 0.3});
+			$('.bgm').prop({volume: 0.25});
 			
 			function updateNewsWindow() {
 				$('.news-window').hide();
@@ -410,6 +410,7 @@
 				} else if ($("#button4").is(":checked")) {
 					$('#window-4').show();
 				} else if ($("#button5").is(":checked")) {
+					$('#window-5 > .no-news').prop({playbackRate: 0.8, defaultPlaybackRate: 0.8});
 					$('#window-5').show();
 				}
 				
